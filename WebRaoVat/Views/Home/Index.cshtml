@@ -1,8 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var ListPost = ViewData["ListPost"] as List<Post>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="card-body row">
+    @foreach (var item in ListPost)
+    {
+        <div class="col-md-4" style="width: 18rem;">
+            <img class="card-img-top" src="@item.ImagePath" alt="@item.Title" style="width:15rem;height:20rem;">
+            <div class="card-body">
+                <p class="card-text">@item.Title / <span>@item.Category.Name</span></p>
+                <a href="/Post/Detail?postId=@item.Id" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+
+    }
+</div>
+<div class="form-control pagination">
+    <form action="/home" method="get" >
+        <button type="submit" value="1" name="page" class="page-item"><span class="page-link">1</span></button>
+        <button type="submit" value="2" name="page" class="page-item"><span class="page-link">2</span></button>
+    </form>
 </div>
