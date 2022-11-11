@@ -4,13 +4,32 @@ using WebRaoVat.Models;
 
 namespace WebRaoVat.Services
 {
-    public class CategoryService
+
+    public interface ICategoryService
+    {
+         void CreateCategory(Category category);
+        bool DeleteCategory(int id);
+        List<Category> GetAllCategories();
+        List<Category> GetAllCategoriesActive();
+        Category? GetCategoryById(int id);
+        Category? GetCategoryByName(string name);
+        int GetCategoryCount(int id);
+        bool IsCategoryActive(int id);
+        bool IsExistCategory(Category category);
+        bool UpdateCategory(Category category);
+    }
+
+
+    public class CategoryService : ICategoryService
     {
         private readonly DataContext _dataContext;
+
         public CategoryService(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
+
+        
         public void CreateCategory(Category category)
         {
             _dataContext.Add(category);
