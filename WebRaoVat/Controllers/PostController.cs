@@ -86,8 +86,8 @@ namespace WebRaoVat.Controllers
                 ViewData["Post"] = post;
             }
             Console.WriteLine("Post: " + post.Title);
-            ViewData["Categories"] = _categoryServices.GetAllCategoriesActive();
-            ViewData["ListCategory"] = _categoryServices.GetAllCategoriesActive();
+            ViewData["Categories"] = _categoryService.GetAllCategoriesActive();
+            ViewData["ListCategory"] = _categoryService.GetAllCategoriesActive();
             return View();
         }
         [HttpPost]
@@ -116,15 +116,15 @@ namespace WebRaoVat.Controllers
                     post.ImagePath = String.Concat('/', folderUpload, '/', fileName);
                 }
             }
-            _postServices.UpdatePost(post);
+            _postService.UpdatePost(post);
             return RedirectToAction("Index");
         }
         public IActionResult Delete(int postId)
         {
-            var post = _postServices.GetPostById(postId);
+            var post = _postService.GetPostById(postId);
             if (post == null) return RedirectToAction("Create");
 
-            _postServices.DeletePost(postId);
+            _postService.DeletePost(postId);
             return RedirectToAction("Index");
 
         }
@@ -137,16 +137,16 @@ namespace WebRaoVat.Controllers
                 Index();
                 return;
             }
-            _commentServices.CreateComment(comment);
+            _commentService.CreateComment(comment);
             Detail(comment.PostId);
             return;
         }
         public void ChangeStatus(int postId)
         {
-            var post = _postServices.GetPostById(postId);
+            var post = _postService.GetPostById(postId);
             if (post.Status == true) { post.Status = false; }
             else { post.Status = true; }
-            _postServices.UpdatePost(post);
+            _postService.UpdatePost(post);
             return;
         }
     }
