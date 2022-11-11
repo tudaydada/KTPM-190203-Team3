@@ -4,7 +4,7 @@ using WebRaoVat.Models;
 
 namespace WebRaoVat.Services
 {
-    public interface IPostServices
+    public interface IPostService
     {
         public List<Post> GetAllPost();
         public Post? GetPostById(int id);
@@ -19,7 +19,7 @@ namespace WebRaoVat.Services
         public bool DeletePost(int id);
 
     }
-    public class PostService : IPostServices
+    public class PostService : IPostService
     {
         private readonly DataContext _dataContext;
         public PostService(DataContext dataContext)

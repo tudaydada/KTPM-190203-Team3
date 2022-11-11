@@ -6,14 +6,14 @@ namespace WebRaoVat.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _categoryServices;
-        public CategoryController(ICategoryService categoryServices)
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
-            _categoryServices = categoryServices;
+            _categoryService = categoryService;
         }
         public IActionResult Index()
         {
-            ViewData["ListCategories"] = _categoryServices.GetAllCategories();
+            ViewData["ListCategories"] = _categoryService.GetAllCategories();
             return View();
         }
         [HttpGet]
@@ -25,13 +25,13 @@ namespace WebRaoVat.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
-            _categoryServices.CreateCategory(category);
+            _categoryService.CreateCategory(category);
             return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Update(int categoryId)
         {
-            var category = _categoryServices.GetCategoryById(categoryId);
+            var category = _categoryService.GetCategoryById(categoryId);
             if (category == null) return RedirectToAction("Index");
             ViewData["Category"] = category;
             return View();
@@ -39,12 +39,12 @@ namespace WebRaoVat.Controllers
         [HttpPost]
         public IActionResult Update(Category category)
         {
-            if (_categoryServices.UpdateCategory(category)) return RedirectToAction("Index");
+            if (_categoryService.UpdateCategory(category)) return RedirectToAction("Index");
             return Update(category.Id);
         }
         public IActionResult Delete(int categoryId)
         {
-            if (_categoryServices.DeleteCategory(categoryId)) return RedirectToAction("Index");
+            if (_categoryService.DeleteCategory(categoryId)) return RedirectToAction("Index");
             return Update(categoryId);
         }
     }

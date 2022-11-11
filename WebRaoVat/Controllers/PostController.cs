@@ -7,21 +7,21 @@ namespace WebRaoVat.Controllers
 {
     public class PostController : Controller
     {
-        private readonly ICategoryService _categoryServices;
-        private readonly IPostServices _postServices;
-        private readonly ICommentServices _commentServices;
+        private readonly ICategoryService _categoryService;
+        private readonly IPostService _postService;
+        private readonly ICommentService _commentService;
         private IHostingEnvironment _hostingEnv;
-        public PostController(ICategoryService categoryServices, IPostServices postServices, ICommentServices commentServices, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv)
+        public PostController(ICategoryService categoryService, IPostService postService, ICommentService commentService, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv)
         {
-            _postServices = postServices;
-            _categoryServices = categoryServices;
-            _commentServices = commentServices;
+            _postService = postService;
+            _categoryService = categoryService;
+            _commentService = commentService;
             _hostingEnv = hostingEnv;
 
         }
         public IActionResult Index()
         {
-            ViewData["ListPost"] = _postServices.GetAllPost();
+            ViewData["ListPost"] = _postService.GetAllPost();
             return View();
         }
 
@@ -29,7 +29,7 @@ namespace WebRaoVat.Controllers
         {
             if (postId == 0) return View("Index");
 
-            var post = _postServices.GetPostByIdActive(postId);
+            var post = _postService.GetPostByIdActive(postId);
             if (post == null) return NotFound();
             ViewData["Post"] = post;
             return View();
@@ -38,8 +38,8 @@ namespace WebRaoVat.Controllers
         public IActionResult Create()
         {
             ViewData["Post"] = new Post();
-            ViewData["Categories"] = _categoryServices.GetAllCategoriesActive();
-            ViewData["ListCategory"] = _categoryServices.GetAllCategoriesActive();
+            ViewData["Categories"] = _categoryService.GetAllCategoriesActive();
+            ViewData["ListCategory"] = _categoryService.GetAllCategoriesActive();
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace WebRaoVat.Controllers
             }
 
             // handle main
-            _postServices.CreatePost(post);
+            _postService.CreatePost(post);
 
             return RedirectToAction("Index");
         }
@@ -76,7 +76,7 @@ namespace WebRaoVat.Controllers
         [HttpGet]
         public IActionResult Update(int postId)
         {
-            var post = _postServices.GetPostById(postId);
+            var post = _postService.GetPostById(postId);
             if (post == null)
             {
                 return NotFound();

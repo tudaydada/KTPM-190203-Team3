@@ -21,8 +21,8 @@ services.AddDbContext<DataContext>(options => options.UseSqlServer(config.GetCon
 
 
 services.AddTransient<ICategoryService, CategoryService>();
-services.AddTransient<ICommentServices, CommentService>();
-services.AddTransient<IPostServices, PostService>();
+services.AddTransient<ICommentService, CommentService>();
+services.AddTransient<IPostService, PostService>();
 
 var app = builder.Build();
 

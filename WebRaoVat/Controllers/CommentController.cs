@@ -5,14 +5,14 @@ namespace WebRaoVat.Controllers
 {
     public class CommentController : Controller
     {
-        private readonly ICommentServices _commentServices;
-        public CommentController(ICommentServices commentServices)
+        private readonly ICommentService _commentService;
+        public CommentController(ICommentService commentService)
         {
-            _commentServices = commentServices;
+            _commentService = commentService;
         }
         public IActionResult Index()
         {
-            ViewData["ListComments"] = _commentServices.GetAllComments();
+            ViewData["ListComments"] = _commentService.GetAllComments();
             return View();
         }
     }
