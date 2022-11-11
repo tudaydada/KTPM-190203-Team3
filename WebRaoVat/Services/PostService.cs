@@ -4,7 +4,22 @@ using WebRaoVat.Models;
 
 namespace WebRaoVat.Services
 {
-    public class PostService
+    public interface IPostServices
+    {
+        public List<Post> GetAllPost();
+        public Post? GetPostById(int id);
+
+        public Post? GetPostByIdActive(int id);
+        public List<Post> GetPostByTitle(string title);
+        public List<Post> GetAllPostActive();
+        public List<Post> GetAllPostActive(int page);
+        public bool IsExistPost(int postId);
+        public void CreatePost(Post post);
+        public bool UpdatePost(Post post);
+        public bool DeletePost(int id);
+
+    }
+    public class PostService : IPostServices
     {
         private readonly DataContext _dataContext;
         public PostService(DataContext dataContext)

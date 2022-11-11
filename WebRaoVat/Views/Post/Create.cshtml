@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Creating Page";
+    var Post = ViewData["Post"] as Post;
+    var Categories = ViewData["Categories"] as List<Category>;
+}
+<form method="POST" action="/Post/Create" enctype="multipart/form-data">
+  
+  <div class="mb-3">
+    <label for="Code" class="form-label">Title</label>
+    <input class="form-control" asp-for="@Post.Title">
+  </div>
+  <div class="mb-3">
+    <label for="Name" class="form-label">Description</label>
+    <input class="form-control" asp-for="@Post.Description">
+  </div>
+  <div class="mb-3">
+    <label for="DepartmentId" class="form-label">Category</label>
+    <select class="form-label" asp-for="@Post.CategoryId">
+        @foreach (var item in Categories)
+        {
+            <option value="@item.Id">@item.Name</option>
+        }
+        
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="ImageFile" class="form-label">Image</label>
+    <input class="form-control" name="imageFile" type="file">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

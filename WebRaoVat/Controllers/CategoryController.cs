@@ -6,8 +6,8 @@ namespace WebRaoVat.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryServices _categoryServices;
-        public CategoryController(ICategoryServices categoryServices)
+        private readonly ICategoryService _categoryServices;
+        public CategoryController(ICategoryService categoryServices)
         {
             _categoryServices = categoryServices;
         }

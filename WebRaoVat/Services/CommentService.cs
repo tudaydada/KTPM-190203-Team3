@@ -4,7 +4,16 @@ using WebRaoVat.Models;
 
 namespace WebRaoVat.Services
 {
-    public class CommentService
+    public interface ICommentServices
+    {
+        public List<Comment> GetAllComments();
+        public Comment? GetCommentById(int id);
+        public List<Comment> GetCommentByName(string name);
+        public void CreateComment(Comment comment);
+        public bool UpdateComment(Comment comment);
+        public bool DeleteComment(int id);
+    }
+    public class CommentService : ICommentServices
     {
         private readonly DataContext _dataContext;
         public CommentService(DataContext dataContext)

@@ -1,6 +1,7 @@
 using WebRaoVat;
 using Microsoft.EntityFrameworkCore;
 using WebRaoVat.Data;
+using WebRaoVat.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
@@ -19,6 +20,9 @@ services.AddControllersWithViews();
 services.AddDbContext<DataContext>(options => options.UseSqlServer(config.GetConnectionString("DatabaseName")));
 
 
+services.AddTransient<ICategoryService, CategoryService>();
+services.AddTransient<ICommentServices, CommentService>();
+services.AddTransient<IPostServices, PostService>();
 
 var app = builder.Build();
 
