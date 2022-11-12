@@ -47,9 +47,14 @@ namespace WebRaoVat.Controllers
         [HttpPost]
         public IActionResult Create(Post post)
         {
+            var IdUser = HttpContext.Session.GetInt32("IdUser")??0;
+            if (IdUser<1)
+            {
+                return RedirectToAction("Error", "Home", new { area = "" });
+            }
             // post image file
             var postFiles = Request.Form.Files.Where(x => x.Name.ToLower().Equals("imagefile"));
-
+            post.AccountId = IdUser;
             // handle post image
             if (postFiles.Count() > 0)
             {
@@ -131,12 +136,13 @@ namespace WebRaoVat.Controllers
 
         public void AddComment(Comment comment)
         {
-            Console.WriteLine(string.IsNullOrEmpty(comment.Messages));
             if (string.IsNullOrEmpty(comment.Messages))
             {
                 Index();
                 return;
             }
+            var idUser = HttpContext.Session.GetInt32("IdUser") ?? 0;
+            comment.AccountId = idUser;
             _commentService.CreateComment(comment);
             Detail(comment.PostId);
             return;

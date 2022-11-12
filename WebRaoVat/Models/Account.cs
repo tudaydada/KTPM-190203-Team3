@@ -23,11 +23,7 @@ namespace WebRaoVat.Models
 
         public string Password { get; set; }
 
-        [NotMapped]
-        [Required]
-        [System.ComponentModel.DataAnnotations.Compare("Password")]
-        public string ConfirmPassword { get; set; }
-        [Required]
+       
         public int RoleId { get; set; }
         public string FullName()
         {

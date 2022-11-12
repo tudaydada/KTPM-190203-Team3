@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Models.Request;
@@ -26,7 +20,7 @@ namespace WebRaoVat.Controllers
         // GET: Accounts
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Accounts.ToListAsync());
+            return View(await _context.Accounts.ToListAsync());
         }
 
         // GET: Accounts/Details/5
@@ -48,7 +42,7 @@ namespace WebRaoVat.Controllers
         }
 
         // GET: Accounts/Login
-        public IActionResult Create()
+        public IActionResult Register()
         {
             return View();
         }
@@ -69,7 +63,7 @@ namespace WebRaoVat.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("idUser,FirstName,LastName,Email,Password")] Account account)
+        public async Task<IActionResult> Register([Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
             account.Password = GetMD5(account.Password);
             account.RoleId = 1;
@@ -86,7 +80,7 @@ namespace WebRaoVat.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("idUser,FirstName,LastName,Email,Password")] AccountRequest accountRequest)
+        public async Task<IActionResult> Login([Bind("Email,Password")] AccountRequest accountRequest)
         {
             var f_password = GetMD5(accountRequest.Password);
             var data = _context.Accounts.Where(s => s.Email.Equals(accountRequest.Email) && s.Password.Equals(f_password)).FirstOrDefault();
@@ -130,23 +124,24 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
-            if (id != account.idUser)
+            if (!AccountExists(account.idUser))
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            else
             {
                 try
                 {
+                    account.Password = GetMD5(account.Password);
+                    account.RoleId = 1;
                     _context.Update(account);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AccountExists(account.idUser))
+                    if (!ModelState.IsValid)
                     {
-                        return NotFound();
+                        return View(account);
                     }
                     else
                     {
@@ -155,7 +150,8 @@ namespace WebRaoVat.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(account);
+
+
         }
 
         // GET: Accounts/Delete/5
@@ -190,14 +186,14 @@ namespace WebRaoVat.Controllers
             {
                 _context.Accounts.Remove(account);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AccountExists(int id)
         {
-          return _context.Accounts.Any(e => e.idUser == id);
+            return _context.Accounts.Any(e => e.idUser == id);
         }
         //create a string MD5
         public static string GetMD5(string str)

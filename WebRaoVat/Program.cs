@@ -8,7 +8,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".AdventureWorks.Session";
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromSeconds(60*60);
     options.Cookie.IsEssential = true;
 });
 
@@ -38,6 +38,7 @@ app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
+//app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
