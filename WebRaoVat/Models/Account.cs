@@ -7,7 +7,7 @@ namespace WebRaoVat.Models
     {
         [Key, Column(Order = 1)]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        public int idUser { get; set; }
+        public int Id { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 3)]
         public string FirstName { get; set; }
@@ -25,6 +25,7 @@ namespace WebRaoVat.Models
 
        
         public int RoleId { get; set; }
+        public int CityId { get; set; }
         public string FullName()
         {
             return this.FirstName + " " + this.LastName;
@@ -33,6 +34,7 @@ namespace WebRaoVat.Models
 
         public virtual Role Role { get; set; }
         public virtual List<Post> Posts { get; set; }
+        public virtual City City { get; set; }
 
     }
 }

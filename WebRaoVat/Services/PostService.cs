@@ -45,12 +45,12 @@ namespace WebRaoVat.Services
 
         public List<Post> GetAllPost()
         {
-            return _dataContext.Posts.Include(p => p.Category).OrderByDescending(p => p.EditedDate).ThenBy(p => p.CreatedDate).ToList();
+            return _dataContext.Posts.Include(p => p.Category).Include(p => p.Account).OrderByDescending(p => p.EditedDate).ThenBy(p => p.CreatedDate).ToList();
         }
 
         public List<Post> GetAllPostActive()
         {
-            return _dataContext.Posts.Include(p => p.Category).Where(p => p.Status == true && p.Category.Status == true).ToList();
+            return _dataContext.Posts.Include(p => p.Category).Include(p => p.Account).Where(p => p.Status == true && p.Category.Status == true).ToList();
         }
         const int PAGE_SIZE = 6;
         public List<Post> GetAllPostActive(int page = 1)
@@ -64,7 +64,7 @@ namespace WebRaoVat.Services
 
         public Post? GetPostById(int id)
         {
-            var post = _dataContext.Posts.Include(p => p.Category).Include(p => p.Comments).FirstOrDefault(p => p.Id == id);
+            var post = _dataContext.Posts.Include(p => p.Category).Include(p => p.Comments).Include(p => p.Account).FirstOrDefault(p => p.Id == id);
             if (post != null) post.ViewCount += 1;
             _dataContext.Posts.Update(post);
             _dataContext.SaveChanges();

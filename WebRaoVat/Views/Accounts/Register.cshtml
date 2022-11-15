@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Register";
+    var Cities = ViewData["Cities"] as List<City>;
 }
 
 <h1>Create</h1>
@@ -21,6 +22,16 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CityId" class="form-label">City</label>
+                <select class="form-label" asp-for="@Model.CityId">
+                    @foreach (var item in Cities)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>

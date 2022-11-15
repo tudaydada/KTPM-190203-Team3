@@ -9,6 +9,7 @@
     <th>Title</th>
     <th>Description</th>
     <th>Category</th>
+    <th>Author</th>
     <th>Create date</th>
     <th>Status</th>
     <th>
@@ -23,6 +24,7 @@
                 <td>@post.Title</td>
                 <td>@post.Description</td>
                 <td>@post.Category.Name</td>
+                <td><a href="/Accounts/Details/@post.Account.Id">@post.Account.FullName()</a></td>
                 <td>@post.CreatedDate.ToString("dd/MM/yyyy")</td>
                 <td>
                     @if (post.Status == true)

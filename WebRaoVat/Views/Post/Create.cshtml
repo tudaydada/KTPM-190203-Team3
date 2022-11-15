@@ -2,6 +2,7 @@
     ViewData["Title"] = "Creating Page";
     var Post = ViewData["Post"] as Post;
     var Categories = ViewData["Categories"] as List<Category>;
+    var Cities = ViewData["Cities"] as List<City>;
 }
 <form method="POST" action="/Post/Create" enctype="multipart/form-data">
   
@@ -23,6 +24,16 @@
         
     </select>
   </div>
+    <div class="mb-3">
+        <label for="CityId" class="form-label">Category</label>
+        <select class="form-label" asp-for="@Post.CityId">
+            @foreach (var item in Cities)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+
+        </select>
+    </div>
   <div class="mb-3">
     <label for="ImageFile" class="form-label">Image</label>
     <input class="form-control" name="imageFile" type="file">

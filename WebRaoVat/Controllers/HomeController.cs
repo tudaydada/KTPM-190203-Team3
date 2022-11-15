@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Services;
 
@@ -10,12 +11,14 @@ namespace WebRaoVat.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postServices;
+        private readonly DataContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryServices, IPostService postServices)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryServices, IPostService postServices,DataContext context)
         {
             _logger = logger;
             this._categoryService = categoryServices;
             this._postServices = postServices;
+            this._context = context;
 
         }
 

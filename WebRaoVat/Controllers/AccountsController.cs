@@ -32,7 +32,7 @@ namespace WebRaoVat.Controllers
             }
 
             var account = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.idUser == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (account == null)
             {
                 return NotFound();
@@ -44,6 +44,7 @@ namespace WebRaoVat.Controllers
         // GET: Accounts/Login
         public IActionResult Register()
         {
+            ViewData["Cities"] = _context.Cities.ToList();
             return View();
         }
         // GET: Accounts/Create
@@ -63,7 +64,7 @@ namespace WebRaoVat.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("idUser,FirstName,LastName,Email,Password")] Account account)
+        public async Task<IActionResult> Register([Bind("FirstName,LastName,Email,Password,CityId")] Account account)
         {
             account.Password = GetMD5(account.Password);
             account.RoleId = 1;
@@ -88,9 +89,9 @@ namespace WebRaoVat.Controllers
             {
                 //add session
                 HttpContext.Session.SetString("FullName", data.FullName());
-                HttpContext.Session.SetInt32("IdUser", data.idUser);
+                HttpContext.Session.SetInt32("IdUser", data.Id);
                 HttpContext.Session.SetString("Email", data.Email);
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Home");
             }
             else
             {
@@ -124,7 +125,7 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
-            if (!AccountExists(account.idUser))
+            if (!AccountExists(account.Id))
             {
                 return NotFound();
             }
@@ -163,7 +164,7 @@ namespace WebRaoVat.Controllers
             }
 
             var account = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.idUser == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (account == null)
             {
                 return NotFound();
@@ -193,7 +194,7 @@ namespace WebRaoVat.Controllers
 
         private bool AccountExists(int id)
         {
-            return _context.Accounts.Any(e => e.idUser == id);
+            return _context.Accounts.Any(e => e.Id == id);
         }
         //create a string MD5
         public static string GetMD5(string str)

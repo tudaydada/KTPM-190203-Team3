@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Services;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -7,12 +8,14 @@ namespace WebRaoVat.Controllers
 {
     public class PostController : Controller
     {
+        private readonly DataContext _context;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
         private IHostingEnvironment _hostingEnv;
-        public PostController(ICategoryService categoryService, IPostService postService, ICommentService commentService, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv)
+        public PostController(DataContext context, ICategoryService categoryService, IPostService postService, ICommentService commentService, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv)
         {
+            _context = context;
             _postService = postService;
             _categoryService = categoryService;
             _commentService = commentService;
@@ -39,6 +42,7 @@ namespace WebRaoVat.Controllers
         {
             ViewData["Post"] = new Post();
             ViewData["Categories"] = _categoryService.GetAllCategoriesActive();
+            ViewData["Cities"] = _context.Cities.ToList();
             ViewData["ListCategory"] = _categoryService.GetAllCategoriesActive();
             return View();
         }
