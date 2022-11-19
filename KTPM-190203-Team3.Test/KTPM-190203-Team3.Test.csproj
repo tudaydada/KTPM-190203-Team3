@@ -29,4 +29,10 @@
     <ProjectReference Include="..\WebRaoVat\WebRaoVat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ServicesTest\AccountServiceTest\" />
+    <Folder Include="ServicesTest\CommentServiceTest\" />
+    <Folder Include="ServicesTest\PostServiceTest\" />
+  </ItemGroup>
+
 </Project>

@@ -6,14 +6,15 @@ using WebRaoVat.Models;
 using WebRaoVat.Services;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace KTPM_190203_Team3.Test.ServicesTest
+namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
     [TestClass]
-    public class CategoryServiceTest
+    public class GetAllCategoriesActiveTest
     {
         protected readonly DataContext _context;
         protected readonly CategoryService categoryService;
-        public CategoryServiceTest()
+        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
+        public GetAllCategoriesActiveTest()
         {
             var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             _context = new DataContext(options);
@@ -21,27 +22,22 @@ namespace KTPM_190203_Team3.Test.ServicesTest
             categoryService = new CategoryService(_context);
             _context.Categories.AddRange(CategoryMockData.GetCategories());
             _context.SaveChanges();
-
         }
         [Fact]
-        public async Task GetAll_ReturnCategoriesList()
+        public async Task Case1()
         {
             /// Arrange
-            //_context.Categories.AddRange(CategoryMockData.GetCategories());
-            //_context.SaveChanges();
-
-            //var sut = new CategoryService(_context);
 
             /// Act
             var result = categoryService.GetAllCategories();
 
             /// Assert
             //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.AreEqual(result.Count, CategoryMockData.GetCategories().Count);
+            Assert.AreEqual(result.Count, categoriesMockData.Count);
         }
 
         [Fact]
-        public async Task Save_AddNewCategory()
+        public async Task Case2()
         {
             /// Arrange
             var newCategory = CategoryMockData.NewCategory();
@@ -54,20 +50,20 @@ namespace KTPM_190203_Team3.Test.ServicesTest
             categoryService.CreateCategory(newCategory);
 
             ///Assert
-            int expectedRecordCount = (CategoryMockData.GetCategories().Count() + 1);
+            int expectedRecordCount = (categoriesMockData.Count() + 1);
             Assert.AreEqual(_context.Categories.Count(), expectedRecordCount);
         }
 
         [Fact]
-        public async Task GetAllIsActive_ReturnCategoriesList()
+        public async Task Case3()
         {
             /// Arrange
-            
+
 
             //var sut = new CategoryService(_context);
 
             /// Act
-            var mockData = CategoryMockData.GetCategories().Where(x => x.Status == true).ToList();
+            var mockData = categoriesMockData.Where(x => x.Status == true).ToList();
             var result = categoryService.GetAllCategoriesActive();
 
             /// Assert
@@ -76,8 +72,8 @@ namespace KTPM_190203_Team3.Test.ServicesTest
         }
 
         [Fact]
-        public async Task GetById_ReturnCategory()
-        {   
+        public async Task Case4()
+        {
             /// Arrange
 
 
@@ -89,10 +85,10 @@ namespace KTPM_190203_Team3.Test.ServicesTest
 
             /// Assert
             //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result!=null && result.Id== 1);
+            Assert.IsTrue(result != null && result.Id == 1);
         }
         [Fact]
-        public async Task GetByName_ReturnCategory()
+        public async Task Case5()
         {
             /// Arrange
             //var sut = new CategoryService(_context);
@@ -107,7 +103,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest
         }
 
         [Fact]
-        public async Task IsExistCategory_ReturnBoolean()
+        public async Task Case6()
         {
             /// Arrange
             //var sut = new CategoryService(_context);
@@ -120,11 +116,11 @@ namespace KTPM_190203_Team3.Test.ServicesTest
 
             /// Assert
             //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result1==false && result2==true);
+            Assert.IsTrue(result1 == false && result2 == true);
         }
 
         [Fact]
-        public async Task UpdateCategory_ReturnBoolean()
+        public async Task Case7()
         {
             /// Arrange
             //var sut = new CategoryService(_context);
@@ -139,6 +135,5 @@ namespace KTPM_190203_Team3.Test.ServicesTest
             //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
             Assert.IsTrue(result1 == false && result2 == true);
         }
-
     }
 }
