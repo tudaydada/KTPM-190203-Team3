@@ -12,7 +12,7 @@ namespace WebRaoVat.Services
         List<Category> GetAllCategories();
         List<Category> GetAllCategoriesActive();
         Category? GetCategoryById(int id);
-        Category? GetCategoryByName(string name);
+        List<Category>? GetCategoryByName(string name);
         int GetCategoryCount(int id);
         bool IsCategoryActive(int id);
         bool IsExistCategory(Category category);
@@ -60,9 +60,9 @@ namespace WebRaoVat.Services
             return _dataContext.Categories.FirstOrDefault(s => s.Id == id);
         }
 
-        public Category? GetCategoryByName(string name)
+        public List<Category>? GetCategoryByName(string name)
         {
-            return _dataContext.Categories.Include(p => p.Posts).FirstOrDefault(c => c.Name == name);
+            return _dataContext.Categories.Include(p => p.Posts).Where(c => c.Name == name).ToList();
         }
 
         public int GetCategoryCount(int id)

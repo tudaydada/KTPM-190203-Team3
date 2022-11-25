@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Services;
+using Xunit;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
@@ -23,117 +24,72 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
             _context.Categories.AddRange(CategoryMockData.GetCategories());
             _context.SaveChanges();
         }
+
+
+        /// <summary>
+        /// Test count of mockdata and count of categoryService.GetAllCategories()  when init
+        /// </summary>
         [Fact]
-        public async Task Case1()
+        public void Case1()
         {
             /// Arrange
 
             /// Act
-            var result = categoryService.GetAllCategories();
+            var result =  categoryService.GetAllCategoriesActive();
 
             /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.AreEqual(result.Count, categoriesMockData.Count);
+            Assert.AreEqual(result.Count, categoriesMockData.Where(x=>x.Status==true).ToList().Count);
         }
 
+
+        /// <summary>
+        /// Test count Categories after create
+        /// </summary>
         [Fact]
         public async Task Case2()
         {
             /// Arrange
             var newCategory = CategoryMockData.NewCategory();
-            //_context.Categories.AddRange(CategoryMockData.GetCategories());
-            //_context.SaveChanges();
-
-            //var sut = new CategoryService(_context);
 
             /// Act
             categoryService.CreateCategory(newCategory);
 
             ///Assert
-            int expectedRecordCount = (categoriesMockData.Count() + 1);
+            int expectedRecordCount = (categoriesMockData.Where(x=>x.Status==true).Count() + 1);
             Assert.AreEqual(_context.Categories.Count(), expectedRecordCount);
         }
 
+        /// <summary>
+        /// Test count Categories after update
+        /// </summary>
         [Fact]
         public async Task Case3()
         {
             /// Arrange
-
-
-            //var sut = new CategoryService(_context);
+            categoryService.UpdateCategory(new Category { Id = 1, Name = "Category1 update", Description = "Description1 update", Status = false });
 
             /// Act
-            var mockData = categoriesMockData.Where(x => x.Status == true).ToList();
             var result = categoryService.GetAllCategoriesActive();
 
             /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.AreEqual(result.Count, mockData.Count);
+            Assert.AreEqual(result.Count, categoriesMockData.Count);
         }
 
+        /// <summary>
+        /// Test count Categories after delete
+        /// </summary>
         [Fact]
         public async Task Case4()
         {
             /// Arrange
-
-
-            //var sut = new CategoryService(_context);
+            categoryService.DeleteCategory(1);
 
             /// Act
-            //var mockData = CategoryMockData.GetCategories().Where(x => x.Id == 1).FirstOrDefault();
-            var result = categoryService.GetCategoryById(1);
+            var result = categoryService.GetAllCategories();
 
             /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result != null && result.Id == 1);
-        }
-        [Fact]
-        public async Task Case5()
-        {
-            /// Arrange
-            //var sut = new CategoryService(_context);
-            var name = "Category1";
-            /// Act
-            //var mockData = CategoryMockData.GetCategories().Where(x => x.Id == 1).FirstOrDefault();
-            var result = categoryService.GetCategoryByName(name);
-
-            /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result != null && result.Name.Equals(name));
+            Assert.AreEqual(result.Count, categoriesMockData.Count-1);
         }
 
-        [Fact]
-        public async Task Case6()
-        {
-            /// Arrange
-            //var sut = new CategoryService(_context);
-            var categoryNotExist = CategoryMockData.NewCategory();
-            var categoryExist = new Category { Id = 1, Name = "Category1", Description = "Description1", Status = true };
-            /// Act
-            //var mockData = CategoryMockData.GetCategories().Where(x => x.Id == 1).FirstOrDefault();
-            var result1 = categoryService.IsExistCategory(categoryNotExist);
-            var result2 = categoryService.IsExistCategory(categoryExist);
-
-            /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result1 == false && result2 == true);
-        }
-
-        [Fact]
-        public async Task Case7()
-        {
-            /// Arrange
-            //var sut = new CategoryService(_context);
-            var categoryNotExist = CategoryMockData.NewCategory();
-            var categoryExist = new Category { Id = 1, Name = "Category1", Description = "Description1_updated", Status = false };
-            /// Act
-            //var mockData = CategoryMockData.GetCategories().Where(x => x.Id == 1).FirstOrDefault();
-            var result1 = categoryService.UpdateCategory(categoryNotExist);
-            var result2 = categoryService.UpdateCategory(categoryExist);
-
-            /// Assert
-            //result.Should().HaveCount(CategoryMockData.GetCategories().Count);
-            Assert.IsTrue(result1 == false && result2 == true);
-        }
     }
 }
