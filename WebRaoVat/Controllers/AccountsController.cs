@@ -5,22 +5,27 @@ using System.Text;
 using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Models.Request;
+using WebRaoVat.Services;
+using WebRaoVat.ViewModels;
 
 namespace WebRaoVat.Controllers
 {
     public class AccountsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IAccountService _accountService;
 
-        public AccountsController(DataContext context)
+        public AccountsController(DataContext context, IAccountService accountService)
         {
             _context = context;
+            _accountService = accountService;
         }
 
         // GET: Accounts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Accounts.ToListAsync());
+            var result = _accountService.GetAllAccount();
+            return View(result);
         }
 
         // GET: Accounts/Details/5
@@ -66,25 +71,38 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("FirstName,LastName,Email,Password,CityId")] Account account)
         {
-            account.Password = GetMD5(account.Password);
-            account.RoleId = 1;
-            _context.Add(account);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(account);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            return View(account);
+            var _account = await _accountService.RegisterAccount(account);
+
+            if(_account != null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            ResultViewModel _result = new ResultViewModel
+            {
+                IsError = true,
+                Message = "Dang ky tai khoan khong thanh cong!!!",
+                Data = null
+            };
+            return Ok(_result);
+
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Email,Password")] AccountRequest accountRequest)
         {
-            var f_password = GetMD5(accountRequest.Password);
-            var data = _context.Accounts.Where(s => s.Email.Equals(accountRequest.Email) && s.Password.Equals(f_password)).FirstOrDefault();
+            if(accountRequest == null)
+            {
+                ResultViewModel _result = new ResultViewModel
+                {
+                    IsError = true,
+                    Message = "vui long nhap day du thong tin!!!",
+                    Data = null
+                };
+                return Ok(_result);
+            }
+            var data = _accountService.LoginAccount(accountRequest);
+
             if (data != null)
             {
                 //add session
@@ -110,7 +128,7 @@ namespace WebRaoVat.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts.FindAsync(id);
+            var account = await _context.Accounts.FindAsync(id) ;
             if (account == null)
             {
                 return NotFound();
@@ -119,13 +137,12 @@ namespace WebRaoVat.Controllers
         }
 
         // POST: Accounts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
-            if (!AccountExists(account.Id))
+            var accountEdit = await _accountService.GetAccountById(account.Id);
+            if (accountEdit == null)
             {
                 return NotFound();
             }
@@ -133,10 +150,7 @@ namespace WebRaoVat.Controllers
             {
                 try
                 {
-                    account.Password = GetMD5(account.Password);
-                    account.RoleId = 1;
-                    _context.Update(account);
-                    await _context.SaveChangesAsync();
+                    _accountService.UpdateAccount(account);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,11 +165,10 @@ namespace WebRaoVat.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-
         }
 
-        // GET: Accounts/Delete/5
+
+            // GET: Accounts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Accounts == null)
@@ -192,25 +205,6 @@ namespace WebRaoVat.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AccountExists(int id)
-        {
-            return _context.Accounts.Any(e => e.Id == id);
-        }
-        //create a string MD5
-        public static string GetMD5(string str)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] fromData = Encoding.UTF8.GetBytes(str);
-            byte[] targetData = md5.ComputeHash(fromData);
-            string byte2String = null;
-
-            for (int i = 0; i < targetData.Length; i++)
-            {
-                byte2String += targetData[i].ToString("x2");
-
-            }
-            return byte2String;
-        }
 
     }
 }
