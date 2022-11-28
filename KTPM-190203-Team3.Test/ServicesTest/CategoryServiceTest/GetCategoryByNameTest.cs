@@ -1,31 +1,10 @@
-﻿using KTPM_190203_Team3.Test.MockData;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebRaoVat.Data;
-using WebRaoVat.Models;
-using WebRaoVat.Services;
+﻿using WebRaoVat.Models;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
-    public class GetCategoryByNameTest
+    public class GetCategoryByNameTest : BaseCategoryTest
     {
-        protected readonly DataContext _context;
-        protected readonly CategoryService categoryService;
-        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
-        public GetCategoryByNameTest()
-        {
-            var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            _context = new DataContext(options);
-            _context.Database.EnsureCreated();
-            categoryService = new CategoryService(_context);
-            _context.Categories.AddRange(CategoryMockData.GetCategories());
-            _context.SaveChanges();
-        }
 
         /// <summary>
         /// Test API get category by name with name is exist
@@ -33,13 +12,14 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case1()
         {
+            InitData();
             /// Arrange
 
             /// Act
             var result = categoryService.GetCategoryByName("Category1");
 
             /// Assert
-            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count > 0);
         }
 
 
@@ -49,11 +29,12 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case2()
         {
+            InitData();
             /// Arrange
             var result = categoryService.GetCategoryByName("NotFound");
 
             /// Assert
-            Assert.IsNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
         /// <summary>
         /// Test API get category by name after create new a category
@@ -61,6 +42,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case3()
         {
+            InitData();
             /// Arrange
             /// Act
             categoryService.CreateCategory(MockData.CategoryMockData.NewCategory());
@@ -75,13 +57,14 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case4()
         {
+            InitData();
             /// Arrange
             /// Act
             categoryService.DeleteCategory(1);
             var result = categoryService.GetCategoryByName("1");
 
             /// Assert
-            Assert.IsNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
         /// <summary>
         /// Test API get category by name after update a category
@@ -89,13 +72,14 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case5()
         {
+            InitData();
             /// Arrange
             /// Act
             categoryService.UpdateCategory(new Category { Id = 1, Name = "Update", Description = "update", Status = false });
             var result = categoryService.GetCategoryByName("1");
 
             /// Assert
-            Assert.IsNull(result);
+            Assert.IsTrue(result.Count == 0);
         }
         /// <summary>
         /// Test API get category by name with contain name
@@ -103,11 +87,12 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case6()
         {
+            InitData();
             /// Arrange
             /// Act
             var result = categoryService.GetCategoryByName("Category");
             /// Assert
-            Assert.IsTrue(result.Count>1);
+            Assert.IsTrue(result.Count > 1);
         }
     }
 }

@@ -1,33 +1,11 @@
 ﻿using KTPM_190203_Team3.Test.MockData;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebRaoVat.Data;
 using WebRaoVat.Models;
-using WebRaoVat.Services;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
-    public class GetAllCategoriesTest
+    public class GetAllCategoriesTest : BaseCategoryTest
     {
-        protected readonly DataContext _context;
-        protected readonly CategoryService categoryService;
-        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
-        public GetAllCategoriesTest()
-        {
-            var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            _context = new DataContext(options);
-            _context.Database.EnsureCreated();
-            categoryService = new CategoryService(_context);
-            _context.Categories.AddRange(CategoryMockData.GetCategories());
-            _context.SaveChanges();
-        }
-
-
         /// <summary>
         /// Test count of mockdata and count of categoryService.GetAllCategories()  when init
         /// </summary>
@@ -35,7 +13,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public async Task Case1()
         {
             /// Arrange
-
+            InitData();
             /// Act
             var result = categoryService.GetAllCategories();
 
@@ -51,6 +29,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public async Task Case2()
         {
             /// Arrange
+            InitData();
             var newCategory = CategoryMockData.NewCategory();
 
             /// Act
@@ -67,6 +46,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case3()
         {
+            InitData();
             /// Arrange
             categoryService.UpdateCategory(new Category { Id = 1, Name = "Category1 update", Description = "Description1 update", Status = true });
 
@@ -83,6 +63,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case4()
         {
+            InitData();
             /// Arrange
             categoryService.DeleteCategory(1);
 

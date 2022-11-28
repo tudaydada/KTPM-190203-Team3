@@ -62,7 +62,7 @@ namespace WebRaoVat.Services
 
         public List<Category>? GetCategoryByName(string name)
         {
-            return _dataContext.Categories.Include(p => p.Posts).Where(c => c.Name == name).ToList();
+            return _dataContext.Categories.Include(p => p.Posts).Where(c => c.Name.Contains(name)).ToList();
         }
 
         public int GetCategoryCount(int id)

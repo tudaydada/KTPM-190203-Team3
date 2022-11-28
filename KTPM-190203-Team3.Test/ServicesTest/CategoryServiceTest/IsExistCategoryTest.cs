@@ -1,39 +1,18 @@
 ﻿using KTPM_190203_Team3.Test.MockData;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebRaoVat.Data;
 using WebRaoVat.Models;
-using WebRaoVat.Services;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
-    public class IsExistCategoryTest
+    public class IsExistCategoryTest : BaseCategoryTest
     {
-        protected readonly DataContext _context;
-        protected readonly CategoryService categoryService;
-        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
-        public IsExistCategoryTest()
-        {
-            var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            _context = new DataContext(options);
-            _context.Database.EnsureCreated();
-            categoryService = new CategoryService(_context);
-            _context.Categories.AddRange(CategoryMockData.GetCategories());
-            _context.SaveChanges();
-        }
-
-
         /// <summary>
         /// Test category is exist
         /// </summary>
         [Fact]
         public async Task Case1()
         {
+            InitData();
             /// Arrange
             var firstCategory = MockData.CategoryMockData.GetCategories().First();
             /// Act
@@ -50,6 +29,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case2()
         {
+            InitData();
             /// Arrange
             var newCategory = CategoryMockData.NewCategory();
 
@@ -66,6 +46,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case3()
         {
+            InitData();
             /// Arrange
             var firstCategory = categoryService.GetCategoryById(1);
             /// Act
@@ -74,7 +55,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
             var result2 = categoryService.IsExistCategory(firstCategory);
 
             /// Assert
-            Assert.IsTrue(result1&&!result2);
+            Assert.IsTrue(result1 && !result2);
         }
 
         /// <summary>
@@ -83,14 +64,15 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case4()
         {
+            InitData();
             /// Arrange
-            var firstCategory = categoryService.GetCategoryById(1);
+            var firstCategory = _context.Categories.First();
             firstCategory.Id = 0;
             /// Act
             var result = categoryService.IsExistCategory(firstCategory);
 
             /// Assert
-            Assert.IsTrue(result);
+            Assert.IsFalse(result);
         }
         /// <summary>
         /// Test count Categories after create
@@ -98,6 +80,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case5()
         {
+            InitData();
             /// Arrange
             var count = categoryService.GetAllCategories().Count();
             /// Act

@@ -1,30 +1,12 @@
 ﻿using KTPM_190203_Team3.Test.MockData;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WebRaoVat.Data;
-using WebRaoVat.Models;
-using WebRaoVat.Services;
-using Xunit;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
     [TestClass]
-    public class GetAllCategoriesActiveTest
+    public class GetAllCategoriesActiveTest : BaseCategoryTest
     {
-        protected readonly DataContext _context;
-        protected readonly CategoryService categoryService;
-        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
-        public GetAllCategoriesActiveTest()
-        {
-            var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            _context = new DataContext(options);
-            _context.Database.EnsureCreated();
-            categoryService = new CategoryService(_context);
-            _context.Categories.AddRange(CategoryMockData.GetCategories());
-            _context.SaveChanges();
-        }
-
 
         /// <summary>
         /// Test count of mockdata and count of categoryService.GetAllCategories()  when init
@@ -33,12 +15,12 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public void Case1()
         {
             /// Arrange
-
+            InitData();
             /// Act
-            var result =  categoryService.GetAllCategoriesActive();
+            var result = categoryService.GetAllCategoriesActive();
 
             /// Assert
-            Assert.AreEqual(result.Count, categoriesMockData.Where(x=>x.Status==true).ToList().Count);
+            Assert.AreEqual(result.Count, categoriesMockData.Where(x => x.Status == true).ToList().Count);
         }
 
 
@@ -49,14 +31,16 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public async Task Case2()
         {
             /// Arrange
+            InitData();
             var newCategory = CategoryMockData.NewCategory();
 
             /// Act
             categoryService.CreateCategory(newCategory);
 
             ///Assert
-            int expectedRecordCount = (categoriesMockData.Where(x=>x.Status==true).Count() + 1);
-            Assert.AreEqual(_context.Categories.Count(), expectedRecordCount);
+            int expectedRecordCount = (CategoryMockData.GetCategories().Where(x => x.Status == true).Count() + 1);
+            int actualRecordCount = _context.Categories.Where(x => x.Status == true).Count();
+            Assert.AreEqual(actualRecordCount, expectedRecordCount);
         }
 
         /// <summary>
@@ -66,13 +50,19 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public async Task Case3()
         {
             /// Arrange
-            categoryService.UpdateCategory(new Category { Id = 1, Name = "Category1 update", Description = "Description1 update", Status = false });
+            InitData();
+            var actualResult = categoryService.GetAllCategoriesActive().Count;
+            var firstCategoryActive = _context.Categories.Where(x => x.Status == true).First();
+            firstCategoryActive.Status = false;
+
+            categoryService.UpdateCategory(firstCategoryActive);
 
             /// Act
-            var result = categoryService.GetAllCategoriesActive();
+            var expectedResult = categoryService.GetAllCategoriesActive().Count;
+
 
             /// Assert
-            Assert.AreEqual(result.Count, categoriesMockData.Count);
+            Assert.AreEqual(actualResult - 1, expectedResult);
         }
 
         /// <summary>
@@ -82,13 +72,14 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         public async Task Case4()
         {
             /// Arrange
+            InitData();
             categoryService.DeleteCategory(1);
 
             /// Act
             var result = categoryService.GetAllCategories();
 
             /// Assert
-            Assert.AreEqual(result.Count, categoriesMockData.Count-1);
+            Assert.AreEqual(result.Count, categoriesMockData.Count - 1);
         }
 
     }

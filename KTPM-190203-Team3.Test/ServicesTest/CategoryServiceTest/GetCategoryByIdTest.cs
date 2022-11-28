@@ -1,41 +1,19 @@
-﻿using KTPM_190203_Team3.Test.MockData;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebRaoVat.Data;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebRaoVat.Models;
-using WebRaoVat.Services;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
 {
     [TestClass]
-    public class GetCategoryByIdTest
+    public class GetCategoryByIdTest : BaseCategoryTest
     {
-        protected readonly DataContext _context;
-        protected readonly CategoryService categoryService;
-        protected readonly List<Category> categoriesMockData = CategoryMockData.GetCategories();
-        public GetCategoryByIdTest()
-        {
-            var options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
-            _context = new DataContext(options);
-            _context.Database.EnsureCreated();
-            categoryService = new CategoryService(_context);
-            _context.Categories.AddRange(CategoryMockData.GetCategories());
-            _context.SaveChanges();
-        }
-
-
         /// <summary>
         /// Test API get category by id with id is exist
         /// </summary>
         [Fact]
         public async Task Case1()
         {
+            InitData();
             /// Arrange
 
             /// Act
@@ -52,6 +30,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case2()
         {
+            InitData();
             /// Arrange
             var result = categoryService.GetCategoryById(-1);
 
@@ -64,6 +43,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case3()
         {
+            InitData();
             /// Arrange
             /// Act
             categoryService.CreateCategory(MockData.CategoryMockData.NewCategory());
@@ -78,6 +58,7 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case4()
         {
+            InitData();
             /// Arrange
             /// Act
             categoryService.DeleteCategory(1);
@@ -92,9 +73,10 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         [Fact]
         public async Task Case5()
         {
+            InitData();
             /// Arrange
             /// Act
-            categoryService.UpdateCategory(new Category { Id=1,Name="Update",Description="update",Status=false});
+            categoryService.UpdateCategory(new Category { Id = 1, Name = "Update", Description = "update", Status = false });
             var result = categoryService.GetCategoryById(1);
 
             /// Assert
