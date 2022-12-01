@@ -24,12 +24,15 @@ namespace WebRaoVat.Migrations
 
             modelBuilder.Entity("WebRaoVat.Models.Account", b =>
                 {
-                    b.Property<int>("idUser")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("idUser"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -55,7 +58,9 @@ namespace WebRaoVat.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.HasKey("idUser");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
 
                     b.HasIndex("RoleId");
 
@@ -86,6 +91,23 @@ namespace WebRaoVat.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("WebRaoVat.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("WebRaoVat.Models.Comment", b =>
@@ -130,6 +152,9 @@ namespace WebRaoVat.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -162,6 +187,8 @@ namespace WebRaoVat.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CityId");
+
                     b.ToTable("Posts");
                 });
 
@@ -184,11 +211,19 @@ namespace WebRaoVat.Migrations
 
             modelBuilder.Entity("WebRaoVat.Models.Account", b =>
                 {
+                    b.HasOne("WebRaoVat.Models.City", "City")
+                        .WithMany("Accounts")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("WebRaoVat.Models.Role", "Role")
                         .WithMany("Account")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("City");
 
                     b.Navigation("Role");
                 });
@@ -226,9 +261,17 @@ namespace WebRaoVat.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebRaoVat.Models.City", "City")
+                        .WithMany("Posts")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Account");
 
                     b.Navigation("Category");
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("WebRaoVat.Models.Account", b =>
@@ -238,6 +281,13 @@ namespace WebRaoVat.Migrations
 
             modelBuilder.Entity("WebRaoVat.Models.Category", b =>
                 {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("WebRaoVat.Models.City", b =>
+                {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Posts");
                 });
 

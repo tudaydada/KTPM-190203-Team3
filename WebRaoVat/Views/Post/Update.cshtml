@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Creating Page";
+    var Post = ViewData["Post"] as Post;
+    var Categories = ViewData["Categories"] as List<Category>;
+}
+<form method="POST" action="/Post/Update" enctype="multipart/form-data">
+    <input  hidden asp-for="@Post.Id"/>
+  <div class="mb-3">
+    <label for="Code" class="form-label">Title</label>
+    <input class="form-control" asp-for="@Post.Title">
+  </div>
+  <div class="mb-3">
+    <label for="Name" class="form-label">Description</label>
+    <input class="form-control" asp-for="@Post.Description">
+  </div>
+  <div class="mb-3">
+    <label for="DepartmentId" class="form-label">Category</label>
+    <select class="form-label" asp-for="@Post.CategoryId">
+        @foreach (var item in Categories)
+        {
+            <option value="@item.Id">@item.Name</option>
+        }
+        
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="DepartmentId" class="form-label">Status</label>
+    <select class="form-label" asp-for="@Post.Status">
+        <option value="True">Active</option>
+        <option value="False">Inactive</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="ImageFile" class="form-label">Image</label>
+    <input class="form-control" name="ImageFile" type="file">
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

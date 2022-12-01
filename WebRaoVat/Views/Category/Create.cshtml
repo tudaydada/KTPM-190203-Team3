@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Creating Page";
+    var Category = ViewData["Category"] as Category;
+}
+<form method="POST" action="/Category/Create">
+
+    <div class="mb-3">
+        <label for="Code" class="form-label">Title</label>
+        <input class="form-control" asp-for="@Category.Name">
+    </div>
+    <div class="mb-3">
+        <label for="Name" class="form-label">Description</label>
+        <input class="form-control" asp-for="@Category.Description">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

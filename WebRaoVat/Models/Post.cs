@@ -11,6 +11,7 @@ namespace WebRaoVat.Models
         public string Description { get; set; } = String.Empty;
         public int CategoryId { get; set; }
         public int AccountId { get; set; }
+        public int CityId { get; set; }
         public virtual Category Category { get; set; }
         [StringLength(1024)]
         public string? ImagePath { get; set; }
@@ -20,5 +21,6 @@ namespace WebRaoVat.Models
         public bool Status { get; set; } = false;
         public virtual List<Comment> Comments { get; set; }
         public virtual Account Account { get; set; }
+        public virtual City City { get; set; }
     }
 }
