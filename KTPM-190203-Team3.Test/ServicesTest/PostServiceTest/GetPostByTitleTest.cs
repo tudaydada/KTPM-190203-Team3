@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KTPM_190203_Team3.Test.ServicesTest.PostServiceTest
 {
-    internal class GetPostByTitleTest
+    public class GetPostByTitleTest : BasePostTest
     {
     }
 }

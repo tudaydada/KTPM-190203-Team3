@@ -67,7 +67,7 @@ namespace WebRaoVat.Services
 
         public int GetCategoryCount(int id)
         {
-            return _dataContext.Categories.Count(c => c.Id == id);
+            return _dataContext.Posts.Count(c => c.CategoryId == id);
         }
 
         public bool IsCategoryActive(int id)

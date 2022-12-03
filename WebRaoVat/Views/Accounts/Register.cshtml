@@ -1,8 +1,10 @@
-﻿@model WebRaoVat.Models.Account
+﻿@using WebRaoVat.ViewModels;
+@model WebRaoVat.Models.Account
 
 @{
     ViewData["Title"] = "Register";
     List<City> Cities = ViewData["Cities"] as List<City>;
+    var result = (ResultViewModel)ViewData["Result"];
 }
 
 <h1>Create</h1>
@@ -11,8 +13,13 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @if (result != null && result.IsError)
+        {
+        <div class="errorHandler alert alert-danger">
+                <i class="fa fa-remove-sign"></i> @result.Message
+        </div>
+        }
         <form asp-action="Register">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />

@@ -95,18 +95,18 @@ namespace WebRaoVat.Controllers
             var result = _accountService.GetAccountById(account.Id);
             if(result == null)
             {
-                ResultViewModel _result = new ResultViewModel
-                {
-                    IsError = true,
-                    Message = "dang ky tai khoan khong thanh cong!!!",
-                    Data = null
-                };
-                return Ok(_result) ;
+                
+                return RedirectToAction(nameof(Login));
             }
-            else
+            ResultViewModel _result = new ResultViewModel 
             {
-                return RedirectToAction(nameof(Index));
-            }
+                IsError = true,
+                Message = "Dang ky tai khoan khong thanh cong!!!",
+                Data = null
+            };
+            ViewData["Cities"] = _context.Cities.ToList();
+            ViewData["Result"]= _result;
+            return View();
 
         }
 
