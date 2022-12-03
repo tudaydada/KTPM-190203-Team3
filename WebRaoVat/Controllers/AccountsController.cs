@@ -75,15 +75,18 @@ namespace WebRaoVat.Controllers
 
             if(_account != null)
             {
-                return RedirectToAction(nameof(Index));
+                
+                return RedirectToAction(nameof(Login));
             }
-            ResultViewModel _result = new ResultViewModel
+            ResultViewModel _result = new ResultViewModel 
             {
                 IsError = true,
                 Message = "Dang ky tai khoan khong thanh cong!!!",
                 Data = null
             };
-            return Ok(_result);
+            ViewData["Cities"] = _context.Cities.ToList();
+            ViewData["Result"]= _result;
+            return View();
 
         }
 

@@ -47,6 +47,9 @@ namespace WebRaoVat.Services
         {
             account.Password = GetMD5(account.Password);
             account.RoleId = 1;
+            var isExist = _context.Accounts.Count(x => x.Email == account.Email);
+            if (isExist > 0)
+                return null;
             _context.Add(account);
             var result = await _context.SaveChangesAsync();
 
