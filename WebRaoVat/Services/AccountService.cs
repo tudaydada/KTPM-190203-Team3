@@ -11,7 +11,7 @@ namespace WebRaoVat.Services
     {
         List<Account> GetAllAccount();
 
-        Task<Account> GetAccountById(int id);
+        Account GetAccountById(int id);
 
         void UpdateAccount(Account account);
 
@@ -33,9 +33,9 @@ namespace WebRaoVat.Services
         {
             _context = context;
         }
-        public async Task<Account> GetAccountById(int id)
+        public  Account GetAccountById(int id)
         {
-            return _context.Accounts.Where(acc => acc.Id == id).FirstOrDefault();
+            return  _context.Accounts.Where(acc => acc.Id == id).FirstOrDefault();
         }
 
         public List<Account> GetAllAccount()
@@ -47,7 +47,7 @@ namespace WebRaoVat.Services
         {
             account.Password = GetMD5(account.Password);
             account.RoleId = 1;
-            _context.Add(account);
+            _context.Accounts.Add(account);
             var result = await _context.SaveChangesAsync();
 
             return result > 0 ? account : null;

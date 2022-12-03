@@ -20,7 +20,7 @@ namespace KTPM_190203_Team3.Test.MockData
 
             };
         }
-        public Account NewAccount()
+        public static Account NewAccount()
         {
             return new Account { Id = 0, CityId = 1, FirstName = "NewFirstName", LastName = "NewLastName", RoleId = 1, Email = "NewEmail@Email.com", MyProperty = 0, Password = "71e41a17623713bb12ee0b3c3b9cd96c" };
                 

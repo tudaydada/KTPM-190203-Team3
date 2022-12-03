@@ -65,13 +65,14 @@ namespace KTPM_190203_Team3.Test.ServicesTest.CategoryServiceTest
         {
             InitData();
             /// Arrange
+            var act = categoryService.GetAllCategories().Count;
             categoryService.DeleteCategory(1);
 
             /// Act
-            var result = categoryService.GetAllCategories();
+            var result = categoryService.GetAllCategories().Count;
 
             /// Assert
-            Assert.AreEqual(result.Count, categoriesMockData.Count - 1);
+            Assert.AreEqual(result, act - 1);
         }
     }
 }

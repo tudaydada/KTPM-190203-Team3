@@ -71,19 +71,42 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("FirstName,LastName,Email,Password,CityId")] Account account)
         {
-            var _account = await _accountService.RegisterAccount(account);
+            //var _account = await _accountService.RegisterAccount(account);
 
-            if(_account != null)
+            //if(_account != null)
+            //{
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ResultViewModel _result = new ResultViewModel
+            //{
+            //    IsError = true,
+            //    Message = "Dang ky tai khoan khong thanh cong!!!",
+            //    Data = null
+            //};
+            //return Ok(_result);
+
+            account.Password = _accountService.GetMD5(account.Password) ;
+            account.RoleId = 1;
+            var _email = _context.Accounts.Select(a => a.Email);
+            
+            _context.Add(account);
+            await _context.SaveChangesAsync();
+
+            var result = _accountService.GetAccountById(account.Id);
+            if(result == null)
+            {
+                ResultViewModel _result = new ResultViewModel
+                {
+                    IsError = true,
+                    Message = "dang ky tai khoan khong thanh cong!!!",
+                    Data = null
+                };
+                return Ok(_result) ;
+            }
+            else
             {
                 return RedirectToAction(nameof(Index));
             }
-            ResultViewModel _result = new ResultViewModel
-            {
-                IsError = true,
-                Message = "Dang ky tai khoan khong thanh cong!!!",
-                Data = null
-            };
-            return Ok(_result);
 
         }
 
@@ -141,7 +164,7 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
-            var accountEdit = await _accountService.GetAccountById(account.Id);
+            var accountEdit =  _accountService.GetAccountById(account.Id);
             if (accountEdit == null)
             {
                 return NotFound();
