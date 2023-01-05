@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Services;
@@ -54,7 +55,21 @@ namespace WebRaoVat.Controllers
             var IdUser = HttpContext.Session.GetInt32("IdUser")??0;
             if (IdUser<1)
             {
-                return RedirectToAction("Error", "Home", new { area = "" });
+                return RedirectToAction("Login", "Accounts", new { area = "" });
+            }
+            if(string.IsNullOrEmpty(post.Title)|| string.IsNullOrEmpty(post.Description)||post.CityId<1)
+            {
+                return RedirectToAction("Create", "Post", new { area = "" });
+            }
+            var user = _context.Accounts.FirstOrDefault(x => x.Id == IdUser);
+            if (user != null)
+            {
+                post.CityId = user.CityId;
+            }
+            else
+            {
+                var cityId = _context.Cities.FirstOrDefault().Id;
+                post.CityId = cityId;
             }
             // post image file
             var postFiles = Request.Form.Files.Where(x => x.Name.ToLower().Equals("imagefile"));
@@ -77,6 +92,8 @@ namespace WebRaoVat.Controllers
             }
 
             // handle main
+            
+            post.CreatedDate = DateTime.Now;
             _postService.CreatePost(post);
 
             return RedirectToAction("Index");
