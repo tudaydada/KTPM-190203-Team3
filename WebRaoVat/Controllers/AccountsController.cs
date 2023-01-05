@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 using WebRaoVat.Data;
 using WebRaoVat.Models;
 using WebRaoVat.Models.Request;
@@ -84,28 +82,32 @@ namespace WebRaoVat.Controllers
             //    Data = null
             //};
             //return Ok(_result);
-
-            account.Password = _accountService.GetMD5(account.Password) ;
-            account.RoleId = 1;
-            var _email = _context.Accounts.Select(a => a.Email);
-            
-            _context.Add(account);
-            await _context.SaveChangesAsync();
-
-            var result = _accountService.GetAccountById(account.Id);
-            if(result == null)
+            var isExist = await _context.Accounts.AnyAsync(x => x.Email.Equals(account.Email));
+            ResultViewModel _result = new ResultViewModel();
+            if (isExist)
             {
-                
-                return RedirectToAction(nameof(Login));
+                _result.IsError = true;
+                _result.Message = "Account Is Exist";
             }
-            ResultViewModel _result = new ResultViewModel 
+            else
             {
-                IsError = true,
-                Message = "Dang ky tai khoan khong thanh cong!!!",
-                Data = null
-            };
+                account.Password = _accountService.GetMD5(account.Password);
+                account.RoleId = 1;
+                var _email = _context.Accounts.Select(a => a.Email);
+
+                _context.Add(account);
+                await _context.SaveChangesAsync();
+
+                var result = _accountService.GetAccountById(account.Id);
+                if (result == null)
+                {
+                    return RedirectToAction(nameof(Login));
+                }
+                _result.IsError = true;
+                _result.Message = "Dang ky tai khoan khong thanh cong!!!";
+            }
             ViewData["Cities"] = _context.Cities.ToList();
-            ViewData["Result"]= _result;
+            ViewData["Result"] = _result;
             return View();
 
         }
@@ -114,7 +116,7 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Email,Password")] AccountRequest accountRequest)
         {
-            if(accountRequest == null)
+            if (accountRequest == null)
             {
                 ResultViewModel _result = new ResultViewModel
                 {
@@ -132,7 +134,7 @@ namespace WebRaoVat.Controllers
                 HttpContext.Session.SetString("FullName", data.FullName());
                 HttpContext.Session.SetInt32("IdUser", data.Id);
                 HttpContext.Session.SetString("Email", data.Email);
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -151,7 +153,7 @@ namespace WebRaoVat.Controllers
                 return NotFound();
             }
 
-            var account = await _context.Accounts.FindAsync(id) ;
+            var account = await _context.Accounts.FindAsync(id);
             if (account == null)
             {
                 return NotFound();
@@ -164,7 +166,7 @@ namespace WebRaoVat.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("idUser,FirstName,LastName,Email,Password")] Account account)
         {
-            var accountEdit =  _accountService.GetAccountById(account.Id);
+            var accountEdit = _accountService.GetAccountById(account.Id);
             if (accountEdit == null)
             {
                 return NotFound();
@@ -191,7 +193,7 @@ namespace WebRaoVat.Controllers
         }
 
 
-            // GET: Accounts/Delete/5
+        // GET: Accounts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Accounts == null)
