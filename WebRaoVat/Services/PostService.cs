@@ -92,8 +92,14 @@ namespace WebRaoVat.Services
         {
             var current = GetPostById(post.Id);
             if (current == null) return false;
-            current.Title = post.Title;
-            current.Description = post.Description;
+            if (string.IsNullOrEmpty(current.Title))
+            {
+                current.Title = post.Title;
+            }
+            if (string.IsNullOrEmpty(current.Description))
+            {
+                current.Description = post.Description;
+            }   
             current.CategoryId = post.CategoryId;
             current.EditedDate = DateTime.Now;
             current.Status = post.Status;
@@ -101,7 +107,7 @@ namespace WebRaoVat.Services
             {
                 current.ImagePath = post.ImagePath;
             }
-            this._dataContext.SaveChanges();
+            _dataContext.SaveChanges();
             return true;
         }
     }
