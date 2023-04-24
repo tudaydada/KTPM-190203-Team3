@@ -57,7 +57,7 @@ namespace WebRaoVat.Controllers
             {
                 return RedirectToAction("Login", "Accounts", new { area = "" });
             }
-            if(string.IsNullOrEmpty(post.Title)|| string.IsNullOrEmpty(post.Description)||post.CityId<1)
+            if(string.IsNullOrEmpty(post.Title) && string.IsNullOrEmpty(post.Description) && post.CategoryId<1)
             {
                 return RedirectToAction("Create", "Post", new { area = "" });
             }

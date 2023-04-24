@@ -28,6 +28,7 @@ namespace WebRaoVat.Services
         }
 
         public void CreatePost(Post post)
+
         {
             _dataContext.Posts.Add(post);
             _dataContext.SaveChanges();
